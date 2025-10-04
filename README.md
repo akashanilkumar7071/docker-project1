@@ -1,85 +1,86 @@
 
+***
 
+# Netflix-themed Web Login Page - Microservice Deployment with Docker Compose
 
+A Netflix-inspired login page hosted on Apache servers running inside Kali Linux Docker containers. This project showcases **microservice deployment** using Docker Compose, with multiple containerized Apache services serving the same or customizable login pages on different ports.
 
----
+***
 
-```markdown
-# Project1 - Netflix-themed Web Login Page
+## Project Overview
 
-A Netflix-inspired login page hosted on Apache within Kali Linux Docker containers. This project demonstrates **microservice deployment** using Docker Compose, with multiple services running on different ports.  
+This project demonstrates:
+- Containerizing web applications with Docker
+- Multi-service orchestration using Docker Compose
+- Hosting web content with Apache HTTP server inside containers
+- Designing responsive, Netflix-style UI/UX login pages
+- Managing multiple independent services on distinct ports for microservice architecture
 
-This project is ideal for learning:
-
-- Docker & Docker Compose
-- Web hosting with Apache
-- Multi-container microservice architecture
-- UI/UX design inspired by popular streaming platforms
-
----
-
+***
 ## Project Structure
 
+```plaintext
+project1/
+├── Dockerfile            # Base Dockerfile for building Apache-based images
+├── docker-compose.yml    # Compose file to deploy all microservices together
+├── index.html            # Default Netflix-themed login page HTML
+├── README.md             # Project documentation (this file)
+└── assets/               # Static assets such as CSS, JS, images (optional)
 ```
 
-project1/
-├── Dockerfile           # Base Dockerfile for all services
-├── docker-compose.yml   # Compose file for multi-service deployment
-├── index.html           # Netflix-themed login page
-└── README.md            # Project documentation
+***
 
-````
+## Microservices Overview
 
-### Services
+| Service Name   | Docker Image       | Host Port |
+|----------------|--------------------|-----------|
+| webseries      | webseries:v1       | 90        |
+| animation      | animation:v1       | 91        |
+| documentaries  | documentaries:v1   | 92        |
+| movies         | movies:v1          | 93        |
 
-| Service Name     | Docker Image       | Port  |
-|-----------------|-----------------|-------|
-| webseries       | webseries:v1      | 90    |
-| animation       | animation:v1      | 91    |
-| documentaries   | documentaries:v1  | 92    |
-| movies          | movies:v1         | 93    |
+- Each service runs an isolated Apache server container.
+- All initially serve the default `index.html` but can be customized independently.
 
-Each service runs an independent Apache server serving the same `index.html`. You can customize each service later with different HTML content.
-
----
+***
 
 ## Features
 
-- Netflix-themed login page  
-- Custom fonts (Google Fonts: Montserrat, Pacifico)  
-- Font Awesome icons for login fields  
-- Profile image integration  
-- Responsive design and semi-transparent form background  
-- Multi-service deployment using Docker Compose  
-- Automatic container restart (`unless-stopped`)  
+- Netflix-style login page UI  
+- Integration of Google Fonts (Montserrat, Pacifico) for typography  
+- Font Awesome icons embedded in login input fields  
+- Profile image display feature  
+- Responsive design with a semi-transparent form overlay on background  
+- Multi-container setup managed via Docker Compose  
+- Auto container restart (`restart: unless-stopped`) configured for reliability  
 
----
+***
 
 ## Prerequisites
 
-Ensure the following are installed:
+Ensure the following tools are installed on your host system:
 
-- [Docker](https://docs.docker.com/get-docker/)  
-- [Docker Compose](https://docs.docker.com/compose/install/)  
-- Git (with SSH access configured)  
-- Internet connection (to fetch fonts and icons)
+- Docker (version 20.x or higher recommended)  
+- Docker Compose (version 1.29+ recommended)  
+- Git (with configured SSH keys if cloning via SSH)  
+- Active internet connection for downloading fonts and icons
 
----
+***
 
-## Installation Steps
+## Installation & Setup Instructions
 
-### 1. Clone Repository via SSH
+### 1. Clone the Repository Using SSH
 
 ```bash
 git clone git@github.com:<USERNAME>/<REPO_NAME>.git
 cd project1
-````
+```
 
-> Make sure your SSH key is added to your GitHub account.
+> **Note:** Add your SSH key to GitHub for seamless cloning.
 
 ### 2. Build Docker Images
 
-You can build each service individually:
+Option A: Build each service image individually
 
 ```bash
 docker build -t webseries:v1 .
@@ -88,20 +89,19 @@ docker build -t documentaries:v1 .
 docker build -t movies:v1 .
 ```
 
-Or use Docker Compose to build all images at once:
+Option B: Build all images together using Docker Compose
 
 ```bash
 docker-compose build
 ```
 
-### 3. Run Services using Docker Compose
+### 3. Launch Containers
+
+Run all services in detached mode with automatic restart enabled:
 
 ```bash
 docker-compose up -d
 ```
-
-* `-d` flag runs containers in detached mode.
-* All services will restart automatically if the system reboots due to `restart: unless-stopped`.
 
 ### 4. Verify Running Containers
 
@@ -109,100 +109,87 @@ docker-compose up -d
 docker ps
 ```
 
-You should see four containers with ports 90–93 mapped to 80 inside the containers.
+You should see containers listening on ports 90, 91, 92, and 93.
 
 ### 5. Access Services in Browser
 
-| Service       | URL                                        |
-| ------------- | ------------------------------------------ |
-| webseries     | [http://localhost:90](http://localhost:90) |
-| animation     | [http://localhost:91](http://localhost:91) |
-| documentaries | [http://localhost:92](http://localhost:92) |
-| movies        | [http://localhost:93](http://localhost:93) |
+| Service       | URL                       |
+|---------------|---------------------------|
+| webseries     | http://localhost:90        |
+| animation     | http://localhost:91        |
+| documentaries | http://localhost:92        |
+| movies        | http://localhost:93        |
 
----
+***
 
-## Stopping Services
+## Stopping and Cleaning Up
+
+### Stop all running containers
 
 ```bash
 docker-compose down
 ```
 
-* Stops all running containers and removes them.
-* Does **not** remove images. To remove images:
+### Optional: Remove all images
 
 ```bash
 docker rmi webseries:v1 animation:v1 documentaries:v1 movies:v1
 ```
 
----
+***
 
 ## Customization
 
-1. **Change HTML content per service**:
+### Customize HTML for each service
 
-   * Create separate HTML files: `webseries.html`, `animation.html`, etc.
-   * Update Dockerfile `COPY` command for each service:
+1. Create a unique HTML file for each service:
 
-   ```dockerfile
-   COPY webseries.html /var/www/html/index.html
-   ```
+- `webseries.html`  
+- `animation.html`  
+- `documentaries.html`  
+- `movies.html`
 
-2. **Add new services**:
+2. In Dockerfile, modify the copy command accordingly for each build:
 
-   * Update `docker-compose.yml` with new service name, image, and port.
+```dockerfile
+COPY webseries.html /var/www/html/index.html
+```
 
-3. **Change Apache configuration**:
+### Add New Services
 
-   * Apache runs with default config. Modify `/etc/apache2/sites-available/000-default.conf` if needed.
+- Add a new service entry to `docker-compose.yml` specifying image and port.  
+- Build and deploy images similarly.
 
----
+### Modify Apache Configuration
 
-## Git Commands (SSH)
+- Apache uses default settings within containers.  
+- For config tweaks, modify `/etc/apache2/sites-available/000-default.conf` inside container or extend Dockerfile accordingly.
 
-### 1. Add files to staging
+***
+
+## Git Usage (SSH)
 
 ```bash
 git add .
-```
-
-### 2. Commit changes
-
-```bash
-git commit -m "Initial commit: Add Docker setup and Netflix login page"
-```
-
-### 3. Push to GitHub via SSH
-
-```bash
+git commit -m "Add Docker multi-service Netflix login page setup"
 git push origin main
-```
-
-> Replace `main` with your branch name if different.
-
-### 4. Verify push
-
-```bash
 git log --oneline
 ```
 
----
+***
 
-## Troubleshooting
+## Troubleshooting Tips
 
-* **Port conflicts:** Make sure ports 90–93 are free.
-* **Permission issues:** Run Docker commands with `sudo` if needed.
-* **Container build errors:** Ensure `apt update` runs successfully inside Dockerfile.
+- **Port Conflicts:** Ensure host ports 90-93 are free before launching.  
+- **Permissions:** Use `sudo` if Docker commands fail due to permissions.  
+- **Build Errors:** Confirm `apt update` inside Dockerfile runs without errors during build.
 
----
+***
 
 ## Author
 
-**Akash K.A**
-MCA 3B
-
----
+**Akash K.A**  
 
 
-Do you want me to create that script?
-```
+***
+
