@@ -1,0 +1,28 @@
+version: '3.8'
+
+services: 
+  webseries:
+    image: webseries:v1
+    ports:
+      - "90:80"
+    restart: unless-stopped
+
+  animation:
+    image: animation:v1
+    ports:
+      - "91:80"
+    restart: unless-stopped
+
+  documentaries:
+    image: documentaries:v1
+    ports:
+      - "92:80"
+    restart: unless-stopped
+
+  movies:
+    image: movies:v1
+    ports:
+      - "93:80"
+    restart: unless-stopped
+
+
